@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:uber_pro/app/core/translations/app_translations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'app/routes/app_pages.dart';
 import 'app/core/theme/app_theme.dart';
+import 'app/core/translations/app_translations.dart';
+import 'app/data/bindings/initial_binding.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  // Get saved language preference
+  final prefs = await SharedPreferences.getInstance();
+  final String? languageCode = prefs.getString('language');
+
+  runApp(MyApp(initialLocale: languageCode));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String? initialLocale;
+
+  const MyApp({super.key, this.initialLocale});
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +28,11 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       initialRoute: AppPages.INITIAL,
       getPages: AppPages.routes,
+      initialBinding: InitialBinding(),
       debugShowCheckedModeBanner: false,
       translations: AppTranslations(),
-      locale: Get.deviceLocale, // Use device locale
-      fallbackLocale: const Locale('en', 'US'), // Default to English
+      locale: initialLocale != null ? Locale(initialLocale!) : Get.deviceLocale,
+      fallbackLocale: const Locale('en', 'US'),
     );
   }
 }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uber_pro/app/modules/home/views/widgets/cureent_ride_popup.dart';
+import '../../../data/providers/api_provider.dart';
 import '../controllers/home_controller.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_theme.dart';
@@ -8,6 +10,13 @@ import 'widgets/ride_card.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({Key? key}) : super(key: key);
+
+  Future<void> _handleLanguageChange(String langCode) async {
+    controller.changeLanguage(langCode);
+    // Save language preference
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('language', langCode);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,20 +31,57 @@ class HomeView extends GetView<HomeController> {
         ),
         centerTitle: true,
         actions: [
+          IconButton(
+            onPressed: () {
+              Get.toNamed('/admin/orders');
+            },
+            icon: const Icon(Icons.security, color: AppColors.primary),
+          ),
+          IconButton(
+            onPressed: () async {
+              final ApiProvider apiProvider = Get.find<ApiProvider>();
+              await apiProvider.logout();
+            },
+            icon: const Icon(Icons.logout, color: AppColors.primary),
+          ),
           PopupMenuButton<String>(
-            onSelected: controller.changeLanguage,
+            onSelected: _handleLanguageChange,
             itemBuilder: (BuildContext context) => [
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'en',
-                child: Text('English'),
+                child: Row(
+                  children: [
+                    Obx(() => controller.currentLanguage.value == 'en'
+                        ? const Icon(Icons.check, color: AppColors.primary)
+                        : const SizedBox(width: 24)),
+                    const SizedBox(width: 8),
+                    const Text('English'),
+                  ],
+                ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'de',
-                child: Text('Deutsch'),
+                child: Row(
+                  children: [
+                    Obx(() => controller.currentLanguage.value == 'de'
+                        ? const Icon(Icons.check, color: AppColors.primary)
+                        : const SizedBox(width: 24)),
+                    const SizedBox(width: 8),
+                    const Text('Deutsch'),
+                  ],
+                ),
               ),
-              const PopupMenuItem(
+              PopupMenuItem(
                 value: 'fr',
-                child: Text('Français'),
+                child: Row(
+                  children: [
+                    Obx(() => controller.currentLanguage.value == 'fr'
+                        ? const Icon(Icons.check, color: AppColors.primary)
+                        : const SizedBox(width: 24)),
+                    const SizedBox(width: 8),
+                    const Text('Français'),
+                  ],
+                ),
               ),
             ],
             icon: const Icon(Icons.language, color: AppColors.primary),
@@ -53,7 +99,7 @@ class HomeView extends GetView<HomeController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    'Current ride in progress'.tr,
+                    'current_ride_progress'.tr,
                     style: AppTextTheme.subtitle1.copyWith(color: Colors.white),
                   ),
                 ],
@@ -73,7 +119,7 @@ class HomeView extends GetView<HomeController> {
                               : Colors.transparent,
                         ),
                         child: Text(
-                          'Active'.tr,
+                          'active'.tr,
                           style: TextStyle(
                             color: controller.isActive.value
                                 ? Colors.white
@@ -91,7 +137,7 @@ class HomeView extends GetView<HomeController> {
                               : Colors.transparent,
                         ),
                         child: Text(
-                          'Delivered'.tr,
+                          'delivered'.tr,
                           style: TextStyle(
                             color: !controller.isActive.value
                                 ? Colors.white
@@ -124,15 +170,15 @@ class HomeView extends GetView<HomeController> {
         items: [
           BottomNavigationBarItem(
             icon: const Icon(Icons.home),
-            label: 'Home'.tr,
+            label: 'home'.tr,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.history),
-            label: 'History'.tr,
+            label: 'history'.tr,
           ),
           BottomNavigationBarItem(
             icon: const Icon(Icons.person),
-            label: 'Profile'.tr,
+            label: 'profile'.tr,
           ),
         ],
       ),

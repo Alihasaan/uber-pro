@@ -1,6 +1,12 @@
 import 'package:get/get.dart';
+import 'package:uber_pro/app/modules/admin/bindings/admin_binding.dart';
+import '../modules/admin/views/admin_main_view.dart';
 import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/auth/views/login_view.dart';
+import '../modules/auth/views/register_view.dart';
+import '../modules/auth/views/forgot_password_view.dart';
+import '../modules/auth/views/verify_code_view.dart';
+import '../modules/auth/views/reset_password_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/travel/bindings/travel_binding.dart';
@@ -16,6 +22,26 @@ class AppPages {
     GetPage(
       name: Routes.LOGIN,
       page: () => const LoginView(),
+      binding: AuthBinding(),
+    ),
+    GetPage(
+      name: Routes.REGISTER,
+      page: () => const RegisterView(),
+      binding: AuthBinding(),
+    ),
+    GetPage(
+      name: Routes.FORGOT_PASSWORD,
+      page: () => const ForgotPasswordView(),
+      binding: AuthBinding(),
+    ),
+    GetPage(
+      name: Routes.VERIFY_CODE,
+      page: () => const VerifyCodeView(),
+      binding: AuthBinding(),
+    ),
+    GetPage(
+      name: Routes.RESET_PASSWORD,
+      page: () => const ResetPasswordView(),
       binding: AuthBinding(),
     ),
     GetPage(
@@ -38,13 +64,23 @@ class AppPages {
       page: () => const CarInspectionView(),
       binding: InspectionBinding(),
     ),
+    GetPage(
+      name: Routes.ADMIN_ORDERS,
+      page: () => const AdminMainView(),
+      binding: AdminBinding(),
+    ),
   ];
 }
 
 abstract class Routes {
   static const LOGIN = '/login';
+  static const REGISTER = '/register';
+  static const FORGOT_PASSWORD = '/forgot-password';
+  static const VERIFY_CODE = '/verify-code';
+  static const RESET_PASSWORD = '/reset-password';
   static const HOME = '/home';
   static const TRAVEL_DETAILS = '/travel-details';
   static const TRANSFER_PROTOCOL = '/transfer-protocol';
   static const CAR_INSPECTION = '/car-inspection';
+  static const ADMIN_ORDERS = '/admin';
 }
